@@ -1,11 +1,20 @@
 "use client"
 
-import {Button, Card, NoticeMessage, useZodI18n} from "tp-kit/components";
+import {
+    Button,
+    Card,
+    NoticeMessage,
+    NoticeMessageData,
+    ProductCardLayout,
+    ProductGridLayout,
+    useZodI18n
+} from "tp-kit/components";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { TextInput,PasswordInput } from '@mantine/core';
 import { useForm, zodResolver } from '@mantine/form';
-import {z} from "zod";
+import {isValid, z} from "zod";
+import {AddToCartButton} from "../../../components/add-to-cart-button";
 
 
 const schema = z.object({
@@ -16,6 +25,8 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 export default function  ConnexionPage() {
+
+    const [notices, setNotices] = useState<NoticeMessageData[]>([]);
 
     useZodI18n(z);
     const form = useForm<FormValues>({
@@ -34,9 +45,28 @@ export default function  ConnexionPage() {
 
         <div>
             <h1 className="font-bold text-xl mb-8 ">CONNEXION</h1>
-            <form className="flex flex-col my-4" onSubmit={form.onSubmit((values) => console.log(values))}>
+            <form className="flex flex-col my-4" onSubmit={
+                form.onSubmit((values) => {
+                    console.log(values);
+                    setNotices([
+                        {
+                            type: "success",
+                            message : "Votre inscription a bien été prise en compte. Validez votre adresse email pour vous connecter.",
+                        }
+                        ])
+                }
+                )}>
 
-                
+
+                {notices.map((m) => (
+                            <NoticeMessage
+                                message={m.message}
+                                type = {m.type}
+                            />
+                    ))
+                }
+
+
                 <TextInput
                     label="Adresse email"
                     placeholder="lin.guini@barilla.it"
