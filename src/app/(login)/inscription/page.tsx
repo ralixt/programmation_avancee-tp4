@@ -1,45 +1,70 @@
+"use client"
+
+
 import {Button} from "tp-kit/components";
 import Link from "next/link";
+import React from "react";
+import { TextInput,PasswordInput } from '@mantine/core';
+import { useForm,zodResolver } from '@mantine/form';
+import { z } from 'zod';
 
+const schema = z.object({
+    name : z.string().min(2),
+    email : z.string().email(),
+    password : z.string().min(2),
+})
 
 export default function InscriptionPage() {
+
+    const form = useForm({
+
+        validate: zodResolver(schema),
+
+        initialValues: {
+            name:'',
+            email: '',
+            password: '',
+        },
+
+
+    });
 
     return(
         <div>
             <h1 className="font-bold text-xl mb-8 ">INSCRIPTION</h1>
-            <form className="flex flex-col my-4">
+            <form className="flex flex-col my-4" onSubmit={form.onSubmit((values) => console.log(values))}>
 
-                <label htmlFor="name">Nom <span className="text-red-500">*</span></label>
-                <p className="text-gray-400">Le nom qui sera utilisé pour vos commandes</p>
-                <input
-                    type="text"
-                    name="name"
+
+                <TextInput
+                    label="Nom"
+                    description="Le nom qui sera utilisé pour vos commandes"
                     placeholder="Maud Zarella"
-                    className="p-4 rounded-lg bg-gray-100 mb-8"
-
+                    withAsterisk
+                    className="mb-8"
+                    {...form.getInputProps('name')}
                 />
 
-                <label htmlFor="email">Adresse email <span className="text-red-500">*</span></label>
-                <input
-                    type="email"
-                    name="email"
+                <TextInput
+                    label="Adresse email"
                     placeholder="lin.guini@barilla.it"
-                    className="p-4 rounded-lg bg-gray-100 mb-8"
-
+                    withAsterisk
+                    className="mb-8"
+                    {...form.getInputProps('email')}
                 />
 
-                <label htmlFor="password">Mot de passe <span className="text-red-500">*</span></label>
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="Ke$$a1234"
-                    className="p-4 rounded-lg bg-gray-100 mb-8"
+
+                <PasswordInput
+                    label="Mot de passe"
+                    placeholder="Ke$$a..."
+                    withAsterisk
+                    className="mb-8"
+                    {...form.getInputProps('password')}
                 />
 
 
                 <Button
-                    // onClick={function noRefCheck(){}}
                     variant="primary"
+                    type="submit"
                 >
                     Se connecter
                 </Button>
