@@ -1,24 +1,29 @@
 "use client"
 
 
-import {Button} from "tp-kit/components";
+import {Button, useZodI18n} from "tp-kit/components";
 import Link from "next/link";
 import React from "react";
 import { TextInput,PasswordInput } from '@mantine/core';
 import { useForm,zodResolver } from '@mantine/form';
 import { z } from 'zod';
+import { ZodI18nProvider } from "tp-kit/components";
+
 
 const schema = z.object({
     name : z.string().min(2),
-    email : z.string().email(),
+    email : z.string().email().nonempty(),
     password : z.string().min(2),
+
 })
+
+type FormValues = z.infer<typeof schema>;
+
 
 export default function InscriptionPage() {
 
-    const form = useForm({
-
-        validate: zodResolver(schema),
+    useZodI18n(z);
+    const form = useForm<FormValues>({
 
         initialValues: {
             name:'',
@@ -26,12 +31,14 @@ export default function InscriptionPage() {
             password: '',
         },
 
+        validate: zodResolver(schema),
 
     });
 
     return(
         <div>
             <h1 className="font-bold text-xl mb-8 ">INSCRIPTION</h1>
+
             <form className="flex flex-col my-4" onSubmit={form.onSubmit((values) => console.log(values))}>
 
 
@@ -71,11 +78,12 @@ export default function InscriptionPage() {
 
             </form>
 
-            <div className="text-center text-green w-full">
+            <div className="text-center text-brand w-full">
                 <Link href="/connexion">
                     Déjà un compte ? Se connecter
                 </Link>
             </div>
+
 
         </div>
     )

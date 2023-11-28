@@ -1,6 +1,6 @@
 "use client"
 
-import {Button, Card} from "tp-kit/components";
+import {Button, Card, NoticeMessage, useZodI18n} from "tp-kit/components";
 import Link from "next/link";
 import React from "react";
 import { TextInput,PasswordInput } from '@mantine/core';
@@ -13,26 +13,30 @@ const schema = z.object({
     password : z.string().min(2),
 })
 
+type FormValues = z.infer<typeof schema>;
+
 export default function  ConnexionPage() {
 
-    const form = useForm({
-
-        validate: zodResolver(schema),
+    useZodI18n(z);
+    const form = useForm<FormValues>({
 
         initialValues: {
             email: '',
             password: '',
         },
 
+        validate: zodResolver(schema),
+
     });
 
 
     return(
+
         <div>
             <h1 className="font-bold text-xl mb-8 ">CONNEXION</h1>
             <form className="flex flex-col my-4" onSubmit={form.onSubmit((values) => console.log(values))}>
 
-
+                
                 <TextInput
                     label="Adresse email"
                     placeholder="lin.guini@barilla.it"
@@ -61,7 +65,7 @@ export default function  ConnexionPage() {
 
             </form>
 
-            <div className="text-center text-green w-full">
+            <div className="text-center text-brand w-full">
                 <Link href="/inscription">
                     Créer un compte
                 </Link>
