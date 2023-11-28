@@ -1,9 +1,9 @@
 "use client"
 
 
-import {Button, useZodI18n} from "tp-kit/components";
+import {Button, NoticeMessageData, useZodI18n} from "tp-kit/components";
 import Link from "next/link";
-import React from "react";
+import React, {useState} from "react";
 import { TextInput,PasswordInput } from '@mantine/core';
 import { useForm,zodResolver } from '@mantine/form';
 import { z } from 'zod';
@@ -22,6 +22,9 @@ type FormValues = z.infer<typeof schema>;
 
 export default function InscriptionPage() {
 
+    const [notices, setNotices] = useState<NoticeMessageData[]>([]);
+
+
     useZodI18n(z);
     const form = useForm<FormValues>({
 
@@ -39,7 +42,17 @@ export default function InscriptionPage() {
         <div>
             <h1 className="font-bold text-xl mb-8 ">INSCRIPTION</h1>
 
-            <form className="flex flex-col my-4" onSubmit={form.onSubmit((values) => console.log(values))}>
+            <form className="flex flex-col my-4" onSubmit={
+                form.onSubmit((values) => {
+                        console.log(values);
+                        setNotices([
+                            {
+                                type: "success",
+                                message : "Votre inscription a bien été prise en compte. Validez votre adresse email pour vous connecter.",
+                            }
+                        ])
+                    }
+                )}>
 
 
                 <TextInput
