@@ -9,14 +9,17 @@ export default async function Layout({ children }: { children: ReactNode }) {
   return (
     <>
       {/* Orders list */}
-      <SectionContainer wrapperClassName="py-24 min-h-[80vh]">
-        <div className="bg-white rounded-lg p-6 shadow-lg">
-          <OrderTable orders={orders} />
-        </div>
-      </SectionContainer>
+        <SectionContainer wrapperClassName="flex flex-row py-24 min-h-[80vh]">
+            <div className="bg-white rounded-lg p-6 shadow-lg">
+                <OrderTable orders={orders}/>
+            </div>
+            <div className="bg-white rounded-lg p-6 shadow-lg">
+                <OrderTable orders={orders}/>
+            </div>
+        </SectionContainer>
 
-      {/* Children */}
-      {children}
+        {/* Children */}
+        {children}
     </>
   );
 }
