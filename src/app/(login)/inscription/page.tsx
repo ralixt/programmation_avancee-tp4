@@ -1,14 +1,17 @@
 "use client"
 
-
-import {Button, NoticeMessageData, useZodI18n} from "tp-kit/components";
+import {Button, NoticeMessage, NoticeMessageData, useZodI18n} from "tp-kit/components";
 import Link from "next/link";
-import React, {useState} from "react";
+import React, {useCallback, useState} from "react";
 import { TextInput,PasswordInput } from '@mantine/core';
 import { useForm,zodResolver } from '@mantine/form';
 import { z } from 'zod';
 import { ZodI18nProvider } from "tp-kit/components";
 
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { useRouter } from 'next/navigation'
+import type { Database } from '@/lib/database.types'
+import {For} from "@babel/types";
 
 const schema = z.object({
     name : z.string().min(2),
@@ -38,22 +41,58 @@ export default function InscriptionPage() {
 
     });
 
+    const router = useRouter()
+    const supabase = createClientComponentClient<Database>()
+
+
+    const handleSignUp = useCallback(async function (values: FormValues) {
+        setNotices([
+            {
+                type: "success",
+                message : "Votre inscription a bien été prise en compte. Validez votre adresse email pour vous connecter.",
+            }
+        ])
+
+
+        console.log(values);
+
+        const { data, error } = await supabase.auth.signUp(
+            {
+                email: values.email,
+                password: values.password,
+                options: {
+                    emailRedirectTo: 'http://localhost:3000/api/auth/callback',
+                    data: {
+                        name: values.name,
+                    }
+                }
+            }
+        );
+
+        if(error) {
+            setNotices([
+                {
+                    type: "error",
+                    message : "Cette adresse n'est pas disponible",
+                }
+            ])
+        }
+    }, []);
+
+
     return(
         <div>
             <h1 className="font-bold text-xl mb-8 ">INSCRIPTION</h1>
 
-            <form className="flex flex-col my-4" onSubmit={
-                form.onSubmit((values) => {
-                        console.log(values);
-                        setNotices([
-                            {
-                                type: "success",
-                                message : "Votre inscription a bien été prise en compte. Validez votre adresse email pour vous connecter.",
-                            }
-                        ])
-                    }
-                )}>
+            <form className="flex flex-col my-4" onSubmit={form.onSubmit(handleSignUp)}>
 
+                {notices.map((m) => (
+                    <NoticeMessage
+                        message={m.message}
+                        type = {m.type}
+                    />
+                ))
+                }
 
                 <TextInput
                     label="Nom"
@@ -86,7 +125,7 @@ export default function InscriptionPage() {
                     variant="primary"
                     type="submit"
                 >
-                    Se connecter
+                    S'inscrire
                 </Button>
 
             </form>
