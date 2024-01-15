@@ -7,10 +7,15 @@ import { ShoppingBag, X, User } from "@phosphor-icons/react";
 import { Cart } from "./cart";
 import { CartCounter } from "./cart-counter";
 import Link from "next/link";
+import {createClientComponentClient} from "@supabase/auth-helpers-nextjs";
+import getUser from "../utils/supabase";
 
 type Props = {};
 
 const Menu: FC<Props> = memo(function () {
+    const supabase = createClientComponentClient()
+    const user = await getUser(supabase)
+
   return (
     <MenuBar
     trailing={
@@ -25,7 +30,7 @@ const Menu: FC<Props> = memo(function () {
             {({ open }) => (
               <>
                 <Popover.Button as={Button} variant={"ghost"} className={"!rounded-full h-[44px] w-[44px] !p-0 flex justify-center items-center aspect-square relative text-3xl"}>
-                  {open 
+                  {open
                     ? <X size={18} weight="regular" />
                     : <ShoppingBag size={24} weight="regular" />}
 
