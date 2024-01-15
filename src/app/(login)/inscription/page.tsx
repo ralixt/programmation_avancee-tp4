@@ -9,7 +9,7 @@ import { z } from 'zod';
 import { ZodI18nProvider } from "tp-kit/components";
 
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { useRouter } from 'next/navigation'
+import {redirect, useRouter} from 'next/navigation'
 import type { Database } from '@/lib/database.types'
 import {For} from "@babel/types";
 
@@ -77,6 +77,7 @@ export default function InscriptionPage() {
                 }
             ])
         }
+        console.log(error)
     }, []);
 
 

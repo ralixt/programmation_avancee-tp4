@@ -10,12 +10,13 @@ import {
     useZodI18n
 } from "tp-kit/components";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, {useCallback, useState} from "react";
 import { TextInput,PasswordInput } from '@mantine/core';
 import { useForm, zodResolver } from '@mantine/form';
 import {isValid, z} from "zod";
 import {AddToCartButton} from "../../../components/add-to-cart-button";
-
+import { useRouter } from 'next/navigation'
+import {createClientComponentClient} from "@supabase/auth-helpers-nextjs";
 
 const schema = z.object({
     email : z.string().email(),
@@ -39,23 +40,48 @@ export default function  ConnexionPage() {
         validate: zodResolver(schema),
 
     });
+    const router = useRouter()
+    const supabase = createClientComponentClient()
+
+
+    const handleSignIn = useCallback(async function (values: FormValues) {
+        setNotices([
+            {
+                type: "success",
+                message : "Connexion réussi",
+            }
+        ])
+
+
+        console.log(values);
+
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email: values.email,
+            password: values.password
+        })
+
+
+
+        if(error) {
+            setNotices([
+                {
+                    type: "error",
+                    message : "Votre email et/ou votre mot de passe est/sont incorecte(s)",
+                }
+            ])
+        }
+        else {
+            router.refresh()
+        }
+        console.log(error)
+    }, []);
 
 
     return(
 
         <div>
             <h1 className="font-bold text-xl mb-8 ">CONNEXION</h1>
-            <form className="flex flex-col my-4" onSubmit={
-                form.onSubmit((values) => {
-                    console.log(values);
-                    setNotices([
-                        {
-                            type: "success",
-                            message : "Votre inscription a bien été prise en compte. Validez votre adresse email pour vous connecter.",
-                        }
-                        ])
-                }
-                )}>
+            <form className="flex flex-col my-4" onSubmit={form.onSubmit(handleSignIn)}>
 
 
                 {notices.map((m) => (
