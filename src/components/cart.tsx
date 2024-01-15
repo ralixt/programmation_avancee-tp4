@@ -1,7 +1,7 @@
 "use client";
 
-import { FC, memo, useCallback } from "react";
-import { ProductCartLine, FormattedPrice, Button } from "tp-kit/components";
+import React, {FC, memo, useCallback, useState} from "react";
+import {ProductCartLine, FormattedPrice, Button, NoticeMessageData, NoticeMessage} from "tp-kit/components";
 import {
   removeLine,
   updateLine,
@@ -10,16 +10,29 @@ import {
   clearCart,
 } from "../hooks/use-cart";
 import { createOrder } from "../actions/create-order";
+import {response} from "express";
 
 type Props = {};
 
 const Cart: FC<Props> = memo(function () {
   const lines = useCart((cart) => cart.lines);
   const wrapperClasses = "bg-white rounded-lg p-6 shadow-xl space-y-12";
+  const [notices, setNotices] = useState<NoticeMessageData[]>([]);
 
   const handleCreateOrder = useCallback(async () => {
-    await createOrder(useCart.getState());
-    clearCart();
+    const response = await createOrder(useCart.getState());
+    if(response.error) {
+        setNotices([
+            {
+                type: "error",
+                message : response.error,
+            }
+        ])
+    }
+    else {
+        clearCart();
+    }
+
   }, []);
 
   if (lines.length === 0)
@@ -34,7 +47,13 @@ const Cart: FC<Props> = memo(function () {
   return (
     <div className={wrapperClasses}>
       <h2 className="text-sm uppercase font-bold tracking-wide">Mon panier</h2>
-
+        {notices.map((m) => (
+            <NoticeMessage
+                message={m.message}
+                type = {m.type}
+            />
+        ))
+        }
       <div className="space-y-4">
         {lines.map(({ product, qty }) => (
           <ProductCartLine
