@@ -1,4 +1,4 @@
-import {ReactNode} from "react";
+import {ReactNode, useEffect, useState} from "react";
 import {Button, Card, SectionContainer} from "tp-kit/components";
 import prisma from "../../utils/prisma";
 import {OrderTable} from "../../components/order-table";
@@ -9,14 +9,23 @@ import {redirect} from "next/navigation";
 import Logout from "../../components/logout";
 
 export default async function Layout({children}: { children: ReactNode }) {
-    const orders = await prisma.order.findMany();
+
     const supabase = createServerComponentClient({cookies});
     const user = await getUser(supabase)
     console.log(user)
 
+
     if(!user) {
         redirect("/connexion")
     }
+
+    const orders = await prisma.order.findMany(
+        {
+            where: {
+                userId: user.id
+            }
+        }
+    );
 
     return (
         <>
