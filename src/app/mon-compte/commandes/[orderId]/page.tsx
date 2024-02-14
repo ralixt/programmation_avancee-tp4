@@ -22,4 +22,5 @@ export default async function OrderDetailsPage({params}: NextPageProps<Props>) {
   if (!order) notFound();
 
   return <RealTimeOrderDetails order={order} />
+
 }
