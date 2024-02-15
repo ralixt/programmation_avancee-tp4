@@ -10,7 +10,7 @@ import { ZodI18nProvider } from "tp-kit/components";
 
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import {redirect, useRouter} from 'next/navigation'
-import type { Database } from '@/lib/database.types'
+// import type { Database } from '@/lib/database.types'
 import {For} from "@babel/types";
 
 const schema = z.object({
@@ -42,7 +42,8 @@ export default function InscriptionPage() {
     });
 
     const router = useRouter()
-    const supabase = createClientComponentClient<Database>()
+    // const supabase = createClientComponentClient<Database>()
+    const supabase = createClientComponentClient()
 
 
     const handleSignUp = useCallback(async function (values: FormValues) {
@@ -78,7 +79,7 @@ export default function InscriptionPage() {
             ])
         }
         console.log(error)
-    }, []);
+    }, [supabase.auth]);
 
 
     return(
@@ -87,8 +88,9 @@ export default function InscriptionPage() {
 
             <form className="flex flex-col my-4" onSubmit={form.onSubmit(handleSignUp)}>
 
-                {notices.map((m) => (
+                {notices.map((m, index) => (
                     <NoticeMessage
+                        key={index}
                         message={m.message}
                         type = {m.type}
                     />
@@ -122,12 +124,7 @@ export default function InscriptionPage() {
                 />
 
 
-                <Button
-                    variant="primary"
-                    type="submit"
-                >
-                    S'inscrire
-                </Button>
+                <Button variant="primary" type="submit">S&aposinscrire</Button>
 
             </form>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import {FC, memo, Fragment, useState} from "react";
+import {FC, memo, Fragment, useState, useEffect} from "react";
 import {Popover, Transition} from "@headlessui/react";
 import {MenuBar, Button} from "tp-kit/components";
 import {ShoppingBag, X, User} from "@phosphor-icons/react";
@@ -18,13 +18,18 @@ const Menu: FC<Props> = memo(function () {
 
    const [userIsLogged, setUserIsLogged] = useState(false)
 
-    supabase.auth.onAuthStateChange((event, session) => {
-        console.log(event, session)
-        if (session) {
-            setUserIsLogged(true)
-        }
-        console.log("user logged : " + userIsLogged)
-    })
+    useEffect(() => {
+        supabase.auth.onAuthStateChange((event, session) => {
+            console.log(event, session)
+            if (session) {
+                setUserIsLogged(true)
+            }
+            else {
+                setUserIsLogged(false);
+            }
+            console.log("user logged : " + userIsLogged)
+        })
+    }, [supabase.auth, userIsLogged]);
 
 
 

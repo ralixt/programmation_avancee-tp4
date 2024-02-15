@@ -25,7 +25,7 @@ export default function RealTimeOrderDetails({order} : RealTimeOrderDetailsProps
                     table: 'Order',
                     filter: `id=eq.${updateOrder.id}`,
                 }, (payload) => {
-                    setUpdateOrder({ ...(payload.new as Order), lines: order.lines });
+                    setUpdateOrder((ord) => ({ ...(payload.new as Order), lines: ord.lines }));
                 console.log({payload})
             }).subscribe()
 

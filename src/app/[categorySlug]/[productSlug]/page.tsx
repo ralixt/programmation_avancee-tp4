@@ -60,6 +60,21 @@ const productAttributes: ProductAttribute[] = [
   { label: "Instagramabilité", rating: 5 },
 ];
 
+export async function generateStaticParams() {
+  const products = await prisma.product.findMany(
+      {
+        include: {
+          category: true,
+        }
+      }
+  );
+
+  return products.map((product) => ({
+    categorySlug: product.category.slug,
+    productSlug: product.slug
+  }))
+}
+
 export default async function ProductPage({ params }: NextPageProps<Props>) {
   const product = await getProduct(params.productSlug);
   if (!product) notFound();

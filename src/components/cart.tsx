@@ -47,8 +47,9 @@ const Cart: FC<Props> = memo(function () {
   return (
     <div className={wrapperClasses}>
       <h2 className="text-sm uppercase font-bold tracking-wide">Mon panier</h2>
-        {notices.map((m) => (
+        {notices.map((m, index) => (
             <NoticeMessage
+                key={index}
                 message={m.message}
                 type = {m.type}
             />

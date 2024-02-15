@@ -74,7 +74,7 @@ export default function  ConnexionPage() {
             router.refresh()
         }
         console.log(error)
-    }, []);
+    }, [router, supabase.auth]);
 
 
     return(
@@ -84,10 +84,11 @@ export default function  ConnexionPage() {
             <form className="flex flex-col my-4" onSubmit={form.onSubmit(handleSignIn)}>
 
 
-                {notices.map((m) => (
+                {notices.map((m, index) => (
                             <NoticeMessage
+                                key={index}
                                 message={m.message}
-                                type = {m.type}
+                                type={m.type}
                             />
                     ))
                 }

@@ -5,14 +5,13 @@ import {Button} from "tp-kit/components";
 import {useRouter} from "next/navigation";
 import {router} from "next/client";
 
-export default async function Logout () {
+export default function Logout () {
     const supabase = createClientComponentClient()
     const router = useRouter()
     function logout () {
         supabase.auth.signOut()
-        router.refresh()
+            .then(r => router.refresh())
     }
-
 
     return(
         <Button
