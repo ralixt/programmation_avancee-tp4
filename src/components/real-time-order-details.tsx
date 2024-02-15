@@ -33,7 +33,6 @@ export default function RealTimeOrderDetails({order} : RealTimeOrderDetailsProps
             supabase.removeChannel(channel)
         }
 
-
     }, [supabase, updateOrder, setUpdateOrder]);
 
 
