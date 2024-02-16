@@ -1,9 +1,8 @@
 import {NextRequest, NextResponse} from "next/server";
-
+import {revalidatePath} from 'next/cache'
 export async function POST(request: NextRequest) {
 
     const apiKey = process.env.SUPABASE_WEBHOOK_KEY;
-
     const apiKeyHeader = request.headers.get('API-Key');
 
     if (!apiKeyHeader) return NextResponse.json({
@@ -15,6 +14,9 @@ export async function POST(request: NextRequest) {
     }, {status: 403});
 
     console.log("apiKeyHeader :", apiKeyHeader);
+
+    console.log("rebuilding posts...")
+    revalidatePath('/[categorySlug]/[productSlug]')
 
     return NextResponse.json({
         revalidated: true,
